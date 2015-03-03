@@ -11,7 +11,7 @@ I'm going to talk about things
 R is
 ----
 
-A programming language.
+a programming language, defined by a specification:
 
 
 R is not an interpreter
@@ -39,6 +39,9 @@ Make sure all of the field lengths are right!
 Reading a CSV file in R
 -----------------------
 
+Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having differing field lengths!
+
+![](gifs/ecstatic.gif)
 
 
 Getting some variable names in SAS
@@ -72,7 +75,7 @@ Flow control based on data in R
 ---------------------------------
 
 ```r
-num = sum(df$var == 'thang')
+num = sum(df$var == 'foo')
 if (num > 1) {
     ...
 }
@@ -84,6 +87,7 @@ if (num > 1) {
 Multiple reasons, but mainly:
 
 *   SAS has two variable types: datasets & macro strings.
+*   Only macro strings are involved in control flow.
 *   Not only that, but macro strings are different to strings within a
     dataset, so you have to do
     ```sas
@@ -93,7 +97,7 @@ Multiple reasons, but mainly:
     ```sas
     countw(&str.)
     ```
-*   Translating between the two is painful!
+*   Translating between datasets and macro variables is painful!
 
 
 (why is this so hard in SAS?)
@@ -101,17 +105,18 @@ Multiple reasons, but mainly:
 
 R has
 
-*   R has boolean, int, double, strings, dates, complex
+*   boolean, int, double, strings, dates, complex types
 *   Vectors of all of them
 *   Lists
-*   Dataframes---made up of vectors, so can reuse code:
+*   Dataframes, which are made up of vectors, so can reuse code:
     ```r
-    # Which entries of string vector are equal to 'R >> SAS'?
-    vec == 'R >> SAS'
-    # Which entries of a dataframe string column are equal to 'R >> SAS'?
-    df$col == 'R >> SAS'
+    # Which entries of a vector of strings are equal to 'foo'?
+    vec == 'foo'
+    # Which entries of a dataframe string column are equal to 'foo'?
+    df$col == 'foo'
     ```
 *   Arbitrary, user-defined datatypes
+*   All of these can be used in control flow statements
 
 Much more expressive!
 
@@ -174,8 +179,8 @@ It's not all peaches & cream, however...
 No RAM, no R
 ------------
 
-*   32 bit R has a limit of 2 GB, even supposing a 64 bit executable,
-    won't be able to crunch datasets bigger than 4 GB (if that) on most machines.
+*   If it doesn't fit into memory, you're going to have to get creative.
+    For our current machines, this means datasets bigger than 5 GB (if that).
 
 
 Core R is... weird
@@ -183,15 +188,17 @@ Core R is... weird
 
 *   **3** different object-oriented programming systems
 
-*   API is all over the shop
-*   3 datetime classes: `POSIXct`, `POSIClt` and both are subclasses of
-    `POSIXt`. (Example of manipulations?)
-*   `plot` isn't exactly friendly
-*   packages are arcane
+*   API is all over the shop:
+    *   3 datetime classes: `POSIXct`, `POSIClt` and both are subclasses of
+        `POSIXt`. (Example of manipulations?)
+    *   Some system functions are prefixed with 
+    *   `plot` isn't exactly friendly
+
+*   The documentation is verbose and long-winded to everyone except
 
 
-Use packages!
--------------
+Use (Hadley Wickham's) packages!
+--------------------------------
 
 *   `dplyr` for basic data manipulation (subsetting rows & columns,
     aggregation, column transformations)
@@ -203,7 +210,3 @@ Use packages!
 
 Don't bother learning the equivalent core R functions until you
 absolutely need to.
-
-
-Alternatives
-------------
