@@ -1,6 +1,6 @@
 % R for Data Integrity
 
-I'm going to talk about things
+I'm going to talk about programming languages
 ------------------------------
 
 1.  R: what it is, what it isn't.
@@ -39,52 +39,95 @@ Make sure all of the field lengths are right!
 Reading a CSV file in R
 -----------------------
 
-Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having differing field lengths!
+arst
+
+
+Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having different field lengths!
 
 ![](gifs/ecstatic.gif)
 
 
-Getting some variable names in SAS
-----------------------------------
+Something else that's painful in SAS...
+---------------------------------------
 
-Don't want to read the entire dataset!
-
-proc contents
-
-SQL where
-
-
-Getting some variable names in R
---------------------------------
-
-```r
-names(df) %setdiff% c(var1, var2)
+```SAS
+proc sort data=ds_1; by var; run;
 ```
+
+
+Something else that's painful in SAS...
+---------------------------------------
+
+```SAS
+proc sort data=ds_1; by var; run;
+proc sort data=ds_2; by var; run;
+```
+
+
+Something else that's painful in SAS...
+---------------------------------------
+
+```SAS
+proc sort data=ds_1; by var; run;
+proc sort data=ds_2; by var; run;
+
+data merged;
+    merge ds_1 (in=a) ds_2 (in=b);
+    by var;
+    if a=1 and b=0 then output;
+run;
+```
+
+
+... but easy in R
+-----------------
+
+```R
+merged = left_join(ds_1, ds_2, by="var")
+```
+
+. . .
+
+(we cheated a <small>little</small> bit: `left_join` is in `dplyr`, not core R)
 
 
 Flow control based on data in SAS
 ---------------------------------
 
-proc sql, into, where
+Let's print a message if a column `var` takes on the value `'foo'` at least once.
 
-%if n>1 %then %do;
+. . .
 
-%end;
+Should be easy, right?
+
+. . .
+
+```SAS
+proc sql;
+    select count(*) into :num
+    from df
+    where var='foo'
+    ;
+quit;
+
+%if &num > 0 %then %put 'foo' present;
+```
+
 
 Flow control based on data in R
----------------------------------
+-------------------------------
 
 ```r
 num = sum(df$var == 'foo')
-if (num > 1) {
-    ...
-}
+if (num > 1)
+    print("'foo' present")
 ```
+
 
 (why is this so hard in SAS?)
 -----------------------------
 
-Multiple reasons, but mainly:
+Many reasons, but mainly:
 
 *   SAS has two variable types: datasets & macro strings.
 *   Only macro strings are involved in control flow.
@@ -201,7 +244,7 @@ Use (Hadley Wickham's) packages!
 --------------------------------
 
 *   `dplyr` for basic data manipulation (subsetting rows & columns,
-    aggregation, column transformations)
+    aggregation, variable transformations)
 *   `ggplot` for plotting
 *   `lubridate` for date twiddling
 *   `stringr` for string twiddling
