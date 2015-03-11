@@ -1,35 +1,143 @@
-% R for Data Integrity
+% Analytics with R
 
-Let's talk about R and SAS
---------------------------
+What we're going to cover
+-------------------------
 
 1.  R: what it is, what it isn't.
-2.  R >> SAS. Data integrity examples given.
-3.  R is not perfect.
+2.  R and SAS code comparison.
+3.  R shortfalls.
 
 
-R is
-----
+R is a programming language
+---------------------------
 
-a programming language, defined by a specification:
+. . .
+
+Defined by a specification:
+
+[http://cran.r-project.org/doc/manuals/r-release/R-lang.pdf](http://cran.r-project.org/doc/manuals/r-release/R-lang.pdf)
+
+![](gifs/r-spec.gif)
 
 
-R is not an interpreter
+R can be executed with an interpreter
 -----------------------
 
-although you'll need one.
+Save
+
+```r
+print("Hello World!")
+```
+
+as `hello_world.R`. Then...
+
+. . .
 
 
-R is not a Read Evaluate Print Loop (REPL)
+```bash
+$ Rscript hello_world.R
+```
+
+
+R can be executed with an interpreter
+-----------------------
+
+Save
+
+```r
+print("Hello World!")
+```
+
+as `hello_world.R`. Then...
+
+```bash
+$ Rscript hello_world.R
+[1] "Hello World!"
+$
+```
+
+
+R can be executed with a Read Evaluate Print Loop (REPL)
 ------------------------------------------
 
+```r
+$ R
+```
 
-R is not an Integrated Development Environment (IDE)
+
+R can be executed with a Read Evaluate Print Loop (REPL)
+------------------------------------------
+
+```r
+$ R
+>
+```
+
+
+R can be executed with a Read Evaluate Print Loop (REPL)
+------------------------------------------
+
+```r
+$ R
+> 2 + 3
+```
+
+
+R can be executed with a Read Evaluate Print Loop (REPL)
+------------------------------------------
+
+```r
+$ R
+> 2 + 3
+[1] 5
+```
+
+
+R can be executed with a Read Evaluate Print Loop (REPL)
+------------------------------------------
+
+```r
+$ R
+> 2 + 3
+[1] 5
+> t.test(mtcars$mpg)
+```
+
+R can be executed with a Read Evaluate Print Loop (REPL)
+------------------------------------------
+
+```r
+$ R
+> 2 + 3
+[1] 5
+> t.test(mtcars$mpg)
+
+    One Sample t-test
+
+data:  mtcars$mpg
+t = 18.8569, df = 31, p-value < 2.2e-16
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 17.91768 22.26357
+sample estimates:
+mean of x
+ 20.09062
+```
+
+R can be executed with an Integrated Development Environment (IDE)
 ----------------------------------------------------
+
+Debugger, autocomplete, environment inspection, source control integration, plot display, build tool integration...
+
+. . .
+
+![](gifs/RStudio-Screenshot.jpg)
 
 
 Reading a CSV file in SAS
 -------------------------
+
+. . .
 
 ```sas
 data ds;
@@ -65,6 +173,21 @@ run;
 Make sure all of the field lengths are right! What happens -> more columns, resupply, merge multiple files?
 
 
+Reading a CSV file in SAS
+-------------------------
+
+This hurts when
+
+*   Data gets resupplied
+*   Data is split over multiple files
+
+
+Reading a CSV file in SAS
+-------------------------
+
+![](gifs/sas-read-csv.gif)
+
+
 Reading a CSV file in R
 -----------------------
 
@@ -72,21 +195,27 @@ Reading a CSV file in R
 df = read.csv("C:\\path\\to\\file.csv", header=TRUE, stringsAsFactors=FALSE)
 ```
 
+. . .
+
 Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having different field lengths!
+
+
+Reading a CSV file in R
+-----------------------
 
 ![](gifs/ecstatic.gif)
 
 
-Something else that's painful in SAS...
----------------------------------------
+Quiz Time
+---------
 
 ```SAS
 proc sort data=ds_1; by var; run;
 ```
 
 
-Something else that's painful in SAS...
----------------------------------------
+Quiz Time
+---------
 
 ```SAS
 proc sort data=ds_1; by var; run;
@@ -94,8 +223,8 @@ proc sort data=ds_2; by var; run;
 ```
 
 
-Something else that's painful in SAS...
----------------------------------------
+Quiz Time
+---------
 
 ```SAS
 proc sort data=ds_1; by var; run;
@@ -109,7 +238,7 @@ run;
 ```
 
 
-... but easy in R
+... but quick in R
 -----------------
 
 ```R
