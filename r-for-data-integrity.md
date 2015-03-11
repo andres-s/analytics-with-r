@@ -1,7 +1,7 @@
 % R for Data Integrity
 
-I'm going to talk about programming languages
-------------------------------
+Let's talk about R and SAS
+--------------------------
 
 1.  R: what it is, what it isn't.
 2.  R >> SAS. Data integrity examples given.
@@ -20,27 +20,57 @@ R is not an interpreter
 although you'll need one.
 
 
-R is not a REPL
----------------
+R is not a Read Evaluate Print Loop (REPL)
+------------------------------------------
 
 
-R is not an IDE
----------------
+R is not an Integrated Development Environment (IDE)
+----------------------------------------------------
 
 
 Reading a CSV file in SAS
 -------------------------
 
+```sas
+data ds;
+    %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+    infile "C:\path\to\file.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2;
+       informat ID $10.;
+       informat DOB yymmdd10.;
+       informat Gender $1.;
+       informat Age best32.;
+       informat Address $127.;
+       informat Postcode $4.;
+       informat Height best32.;
+       format ID $10.;
+       format DOB yymmdd10.;
+       format Gender $1.;
+       format Age best32.;
+       format Address $127.;
+       format Postcode $4.;
+       format Height best32.;
+    input
+        ID $
+        DOB
+        Gender $
+        Age
+        Address $
+        Postcode $
+        Height
+        ;
+    if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+```
 
-
-Make sure all of the field lengths are right!
+Make sure all of the field lengths are right! What happens -> more columns, resupply, merge multiple files?
 
 
 Reading a CSV file in R
 -----------------------
 
-arst
-
+```r
+df = read.csv("C:\\path\\to\\file.csv", header=TRUE, stringsAsFactors=FALSE)
+```
 
 Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having different field lengths!
 
@@ -83,7 +113,7 @@ run;
 -----------------
 
 ```R
-merged = left_join(ds_1, ds_2, by="var")
+merged = anti_join(ds_1, ds_2, by="var")
 ```
 
 . . .
@@ -119,8 +149,7 @@ Flow control based on data in R
 
 ```r
 num = sum(df$var == 'foo')
-if (num > 1)
-    print("'foo' present")
+if (num > 0) print("'foo' present")
 ```
 
 
@@ -206,15 +235,17 @@ ggplot(df, aes(, fill=var)) + geom_histogram(somethingelse?) + facet_wrap(~ var)
 ```
 
 
-What about analysing datesets on network drive?
----------------------------------------------
+What about analysing datesets stored on a network drive?
+--------------------------------------------------------
 
 *   SAS rarely caches datasets: almost always have to read the dataset off the
     network.
 
 *   R will load datasets into RAM *once* and then process them from there
 
-*   Speed up (measure work RAM bandwidths vs. network bandwidths)
+*   Speed up ~20 GB/s vs ~100MB/s bandwidths
+
+. . .
 
 It's not all peaches & cream, however...
 
@@ -234,10 +265,10 @@ Core R is... weird
 *   API is all over the shop:
     *   3 datetime classes: `POSIXct`, `POSIClt` and both are subclasses of
         `POSIXt`. (Example of manipulations?)
-    *   Some system functions are prefixed with 
-    *   `plot` isn't exactly friendly
+    *   `sys` vs `Sys` vs `System`
+    *   bad default behaviour for many core functions
 
-*   The documentation is verbose and long-winded to everyone except
+*   Although The documentation is verbose and long-winded to everyone except
 
 
 Use (Hadley Wickham's) packages!
@@ -246,8 +277,8 @@ Use (Hadley Wickham's) packages!
 *   `dplyr` for basic data manipulation (subsetting rows & columns,
     aggregation, variable transformations)
 *   `ggplot` for plotting
-*   `lubridate` for date twiddling
-*   `stringr` for string twiddling
+*   `lubridate` for date munging
+*   `stringr` for string munging
 *   `devtools` for writing packages
 *   and more...
 
