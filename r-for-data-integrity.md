@@ -311,7 +311,7 @@ R has
 
 
 
-What about analysing datesets stored on a network drive?
+What about analysing datasets stored on a network drive?
 --------------------------------------------------------
 
 *   SAS rarely caches datasets: almost always have to read the dataset off the
@@ -327,7 +327,7 @@ No RAM, no R
 ------------
 
 *   If it doesn't fit into memory, you're going to have to get creative.
-    For our current machines, this means datasets bigger than 5 GB (if that).
+*   This means datasets bigger than 5 GB (if that).
 
 
 Core R is... weird
@@ -335,9 +335,9 @@ Core R is... weird
 
 *   **3** different object-oriented programming systems
 
-*   API is all over the shop:
+*   Application Programming Interface (API) is all over the shop:
     *   3 datetime classes: `POSIXct`, `POSIClt` and both are subclasses of
-        `POSIXt`.
+        `POSIXt`, and a separate date class `Date`
     *   `sys` vs `Sys` vs `System`
     *   bad default behaviour for many core functions
 
@@ -349,7 +349,7 @@ Use (Hadley Wickham's) packages!
 
 *   `dplyr` for basic data manipulation (subsetting rows & columns,
     aggregation, variable transformations)
-*   `ggplot` for plotting
+*   `ggplot2` for plotting
 *   `lubridate` for date munging
 *   `stringr` for string munging
 *   `devtools` for writing packages
