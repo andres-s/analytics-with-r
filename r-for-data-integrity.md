@@ -170,8 +170,6 @@ data ds;
 run;
 ```
 
-Make sure all of the field lengths are right! What happens -> more columns, resupply, merge multiple files?
-
 
 Reading a CSV file in SAS
 -------------------------
@@ -194,10 +192,6 @@ Reading a CSV file in R
 ```r
 df = read.csv("C:\\path\\to\\file.csv", header=TRUE, stringsAsFactors=FALSE)
 ```
-
-. . .
-
-Bonus: when reading a dataset split between multiple files, don't need to worry about the same column having different field lengths!
 
 
 Reading a CSV file in R
@@ -238,16 +232,12 @@ run;
 ```
 
 
-... but quick in R
------------------
+Quiz Time
+---------
 
 ```R
 merged = anti_join(ds_1, ds_2, by="var")
 ```
-
-. . .
-
-(we cheated a <small>little</small> bit: `left_join` is in `dplyr`, not core R)
 
 
 Flow control based on data in SAS
@@ -257,24 +247,28 @@ Let's print a message if a column `var` takes on the value `'foo'` at least once
 
 . . .
 
-Should be easy, right?
-
-. . .
-
 ```SAS
-proc sql;
-    select count(*) into :num
-    from df
-    where var='foo'
-    ;
-quit;
+%macro find_foo(in_ds);
+  proc sql;
+      select count(*) into :num
+      from &in_ds.
+      where var='foo'
+      ;
+  quit;
 
-%if &num > 0 %then %put 'foo' present;
+  %if &num > 0 %then %put 'foo' present;
+%mend;
+
+%find_foo(ds);
 ```
 
 
 Flow control based on data in R
 -------------------------------
+
+Let's print a message if a column `var` takes on the value `'foo'` at least once.
+
+. . .
 
 ```r
 num = sum(df$var == 'foo')
@@ -289,14 +283,10 @@ Many reasons, but mainly:
 
 *   SAS has two variable types: datasets & macro strings.
 *   Only macro strings are involved in control flow.
-*   Not only that, but macro strings are different to strings within a
-    dataset, so you have to do
     ```sas
     %sysfunc(countw(&str.))
-    ```
-    instead of just
-    ```sas
-    countw(&str.)
+    %scan(&str., &i.)
+    %eval(&str. + 1)
     ```
 *   Translating between datasets and macro variables is painful!
 
@@ -306,8 +296,8 @@ Many reasons, but mainly:
 
 R has
 
-*   boolean, int, double, strings, dates, complex types
-*   Vectors of all of them
+*   boolean, int, double, strings, dates, complex number types
+*   Vectors
 *   Lists
 *   Dataframes, which are made up of vectors, so can reuse code:
     ```r
@@ -319,49 +309,6 @@ R has
 *   Arbitrary, user-defined datatypes
 *   All of these can be used in control flow statements
 
-Much more expressive!
-
-
-Histogram in SAS
-----------------
-
-
-
-
-Histogram in R
---------------
-
-```r
-ggplot(df, aes()) + geom_histogram()
-```
-
-
-Let's use a flag variable to split the histogram SAS
-------------------------------------------------
-
-
-Let's use a flag variable to split the histogram in R
-------------------------------------------------
-
-```r
-ggplot(df, aes()) + geom_histogram() + facet_wrap(~ var)
-```
-
-
-And another variable to colour in the bars in SAS
--------------------------------------------------
-
-```sas
-/* nope */
-```
-
-
-And another variable to colour in the bars in R
------------------------------------------------
-
-```r
-ggplot(df, aes(, fill=var)) + geom_histogram(somethingelse?) + facet_wrap(~ var)
-```
 
 
 What about analysing datesets stored on a network drive?
@@ -372,11 +319,8 @@ What about analysing datesets stored on a network drive?
 
 *   R will load datasets into RAM *once* and then process them from there
 
-*   Speed up ~20 GB/s vs ~100MB/s bandwidths
+*   Bandwidth of DDR3 RAM ~20 GB/s vs local network ~100MB/s
 
-. . .
-
-It's not all peaches & cream, however...
 
 
 No RAM, no R
@@ -393,11 +337,11 @@ Core R is... weird
 
 *   API is all over the shop:
     *   3 datetime classes: `POSIXct`, `POSIClt` and both are subclasses of
-        `POSIXt`. (Example of manipulations?)
+        `POSIXt`.
     *   `sys` vs `Sys` vs `System`
     *   bad default behaviour for many core functions
 
-*   Although The documentation is verbose and long-winded to everyone except
+*   Documentation is often verbose and long-winded
 
 
 Use (Hadley Wickham's) packages!
@@ -410,6 +354,8 @@ Use (Hadley Wickham's) packages!
 *   `stringr` for string munging
 *   `devtools` for writing packages
 *   and more...
+
+. . .
 
 Don't bother learning the equivalent core R functions until you
 absolutely need to.
